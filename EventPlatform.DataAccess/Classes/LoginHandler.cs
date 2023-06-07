@@ -29,8 +29,8 @@ public static class LoginHandler
     public static bool ValidateSessionToken(Guid token)
         => _tokens.ContainsKey(token);
 
-    public static UserTypes GetUserPermissions(Guid token)
-        => (UserTypes)(_permissions[token] ?? 0);
+    public static UserType GetUserPermissions(Guid token)
+        => (UserType)(_permissions[token] ?? 0);
 
     private static Guid GetGuid()
     {

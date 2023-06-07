@@ -16,7 +16,7 @@ public static class RepositoryExtension
         where TDto : class, IDto<TDto>
         where TContext : DbContext
     {
-        if (LoginHandler.GetUserPermissions(sessionToken) <= UserTypes.Organizer)
+        if (LoginHandler.GetUserPermissions(sessionToken) <= UserType.Organizer)
             return new(obj, Status.AccessDenied);
 
         try
@@ -44,7 +44,7 @@ public static class RepositoryExtension
         where TDto : class, IDto<TDto>
         where TContext : DbContext
     {
-        if (LoginHandler.GetUserPermissions(sessionToken) <= UserTypes.Organizer)
+        if (LoginHandler.GetUserPermissions(sessionToken) <= UserType.Organizer)
             return new(obj, Status.AccessDenied);
 
         try
@@ -72,7 +72,7 @@ public static class RepositoryExtension
         where TDto : class, IDto<TDto>
         where TContext : DbContext
     {
-        if (LoginHandler.GetUserPermissions(sessionToken) <= UserTypes.Organizer)
+        if (LoginHandler.GetUserPermissions(sessionToken) <= UserType.Organizer)
             return new(obj, Status.AccessDenied);
 
         try

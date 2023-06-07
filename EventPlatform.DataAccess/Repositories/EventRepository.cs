@@ -13,11 +13,11 @@ public class EventRepository
     {
     }
 
-    public IEnumerable<Event> GetVisibleEvents(UserTypes userType)
+    public IEnumerable<Event> GetVisibleEvents(UserType userType)
         => userType switch
         {
-            UserTypes.Volunteer => Get(e => e.NeedsVolunteers),
-            UserTypes.Organizer => Get(),
+            UserType.Volunteer => Get(e => e.NeedsVolunteers),
+            UserType.Organizer => Get(),
             _ => Enumerable.Empty<Event>(),
         };
 }

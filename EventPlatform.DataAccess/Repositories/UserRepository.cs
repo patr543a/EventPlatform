@@ -15,7 +15,7 @@ public class UserRepository
 
     public IEnumerable<Entities.ECP.Task> GetUserTaskHistory(string username, Guid sessionToken)
     {
-        if (LoginHandler.GetUserPermissions(sessionToken) == UserTypes.None)
+        if (LoginHandler.GetUserPermissions(sessionToken) == UserType.None)
             return Enumerable.Empty<Entities.ECP.Task>();
 
         var user = Get(u => u.UserId == username, null, "TaskIdAssignment,TaskIdAssignment.Event").FirstOrDefault();
