@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventPlatform.Entities.Contexts;
 
-public partial class EventContext : DbContext
+public partial class EventContext 
+    : DbContext
 {
     public EventContext()
     {
