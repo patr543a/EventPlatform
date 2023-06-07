@@ -1,10 +1,8 @@
-﻿namespace EventPlatform.Entities.Enums
+﻿namespace EventPlatform.Entities.Enums;
+
+public enum UserType
 {
-    [Flags]
-    public enum UserType
-    {
-        None = 0,
-        Volunteer = 1,
-        Organizer = 2 | Volunteer,
-    }
+    None = 0,
+    Volunteer,
+    Organizer,
 }
