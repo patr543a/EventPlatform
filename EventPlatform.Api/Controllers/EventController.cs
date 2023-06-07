@@ -1,46 +1,60 @@
-﻿using EventPlatform.Api.Interfaces;
+﻿using EventPlatform.Api.Classes;
+using EventPlatform.Api.Interfaces;
 using EventPlatform.Entities.DTO;
+using EventPlatform.Entities.ECP;
 using EventPlatform.Entities.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Task = System.Threading.Tasks.Task;
 
-namespace EventPlatform.Api.Controllers
+namespace EventPlatform.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class EventController 
+    : CustomController<IEventService>
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class EventController 
-        : ControllerBase
+    public EventController(IEventService eventService)
+        : base(eventService) 
     {
-        private readonly IEventService _eventService;
+    }
 
-        public EventController(IEventService eventService)
-            => _eventService = eventService;
+    [HttpGet]
+    [Route("getEvents")]
+    public async Task<ActionResult<IEnumerable<EventDto>>> GetEvents(Guid? sessionToken)
+    {
+        if (sessionToken is null)
+            return BadRequest("Missing parameters");
 
-        [HttpGet]
-        [Route("getToken")]
-        public async Task<ActionResult<LoginResult>> GetSessionToken(string? username, string? password)
-        {
-            if (username is null ||  password is null)
-                return BadRequest("Missing parameters");
+        return Ok(await Task.FromResult(_service.GetEvents((Guid)sessionToken)));
+    }
 
-            var result = await Task.FromResult(_eventService.GetSessionToken(username, password));
+    [HttpPost]
+    [Route("addEvent")]
+    public async Task<ActionResult<PostResult<Event, EventDto>>> AddEvent(Guid? sessionToken, Event? @event)
+    {
+        if (sessionToken is null || @event is null)
+            return BadRequest("Missing parameters");
 
-            if (result is null)
-                return Unauthorized("Invalid login");
+        return Ok(await Task.FromResult(_service.AddEvent((Guid)sessionToken, @event)));
+    }
 
-            return Ok(result);
-        }
+    [HttpDelete]
+    [Route("deleteEvent")]
+    public async Task<ActionResult<DeleteResult<Event, EventDto>>> DeleteEvent(Guid? sessionToken, Event? @event)
+    {
+        if (sessionToken is null || @event is null)
+            return BadRequest("Missing parameters");
 
-        [HttpGet]
-        [Route("getEvents")]
-        public async Task<ActionResult<IEnumerable<EventDto>>> GetEvents(Guid sessionToken)
-            => Ok(await Task.FromResult(_eventService.GetEvents(sessionToken)));
+        return Ok(await Task.FromResult(_service.DeleteEvent((Guid)sessionToken, @event)));
+    }
 
-        [HttpGet]
-        [Route("getUserTaskHistory")]
-        public async Task<ActionResult<IEnumerable<TaskDto>>> GetUserTaskHistory(string? username, Guid? sessionToken)
-        {
+    [HttpPut]
+    [Route("updateEvent")]
+    public async Task<ActionResult<PutResult<Event, EventDto>>> UpdateEvent(Guid? sessionToken, Event? @event)
+    {
+        if (sessionToken is null || @event is null)
+            return BadRequest("Missing parameters");
 
-        }
+        return Ok(await Task.FromResult(_service.UpdateEvent((Guid)sessionToken, @event)));
     }
 }
