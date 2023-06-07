@@ -1,29 +1,33 @@
-﻿using EventPlatform.Api.Interfaces;
+﻿using EventPlatform.Api.Classes;
+using EventPlatform.Api.Interfaces;
 using EventPlatform.DataAccess.Classes;
-using EventPlatform.DataAccess.Services;
+using EventPlatform.Entities.Contexts;
 using EventPlatform.Entities.DTO;
+using EventPlatform.Entities.ECP;
 using EventPlatform.Entities.Models;
 
-namespace EventPlatform.Api.Services
+namespace EventPlatform.Api.Services;
+
+public class EventService
+    : ServiceBase, IEventService
 {
-    public class EventService
-        : IEventService
-    {
-        private readonly Repositories _repositories = new();
+    public IEnumerable<EventDto> GetEvents(Guid sessionToken)
+        => from e in _repositories.EventRepository
+           .GetVisibleEvents(LoginHandler.GetUserPermissions(sessionToken))
+           select new EventDto(e);
 
-        public LoginResult? GetSessionToken(string username, string password)
-            => LoginService.Login(_repositories, username, password);
+    public PostResult<Event, EventDto> AddEvent(Guid sessionToken, Event @event)
+        => _repositories
+            .EventRepository
+            .Add<Event, EventDto, EventContext>(sessionToken, @event);
 
-        public IEnumerable<EventDto> GetEvents(Guid sessionToken)
-            => from e in _repositories.EventRepository
-               .GetVisibleEvents(LoginService.GetUserPermissions(sessionToken))
-               select new EventDto()
-               {
-                   StartDate = e.StartDate,
-                   EndDate = e.EndDate,
-                   NeedsVolunteers = e.NeedsVolunteers,
-                   Organizer = e.OrganizerIdFk,
-                   Description = e.Description,
-               };
-    }
+    public DeleteResult<Event, EventDto> DeleteEvent(Guid sessionToken, Event @event)
+        => _repositories
+            .EventRepository
+            .Delete<Event, EventDto, EventContext>(sessionToken, @event);
+
+    public PutResult<Event, EventDto> UpdateEvent(Guid sessionToken, Event @event)
+        => _repositories
+            .EventRepository
+            .Update<Event, EventDto, EventContext>(sessionToken, @event);
 }
