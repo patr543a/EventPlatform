@@ -1,8 +1,12 @@
-﻿namespace EventPlatform.Entities.ECP;
+﻿using EventPlatform.Entities.DTO;
+using EventPlatform.Entities.Interfaces;
+
+namespace EventPlatform.Entities.ECP;
 
 public partial class Event
+    : IDtoConversion<Event, EventDto>
 {
-    public int EventId { get; set; }
+    public int? EventId { get; set; }
 
     public DateTime StartDate { get; set; }
 
@@ -14,7 +18,10 @@ public partial class Event
 
     public string Description { get; set; } = null!;
 
-    public virtual User Organizer { get; set; } = null!;
+    public virtual User? Organizer { get; set; } = null!;
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+
+    public EventDto ToDto()
+        => new(this);
 }

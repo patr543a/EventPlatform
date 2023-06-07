@@ -1,6 +1,10 @@
-﻿namespace EventPlatform.Entities.ECP;
+﻿using EventPlatform.Entities.DTO;
+using EventPlatform.Entities.Interfaces;
+
+namespace EventPlatform.Entities.ECP;
 
 public partial class Task
+    : IDtoConversion<Task, TaskDto>
 {
     public int TaskId { get; set; }
 
@@ -10,7 +14,10 @@ public partial class Task
 
     public virtual Event Event { get; set; } = null!;
 
-    public virtual ICollection<User> VolunteerIdAssignment { get; set; } = new List<User>();
+    public virtual IEnumerable<User> VolunteerIdAssignment { get; set; } = new List<User>();
 
-    public virtual ICollection<User> VolunteerIdCandidate { get; set; } = new List<User>();
+    public virtual IEnumerable<User> VolunteerIdCandidate { get; set; } = new List<User>();
+
+    public TaskDto ToDto()
+        => new(this);
 }
