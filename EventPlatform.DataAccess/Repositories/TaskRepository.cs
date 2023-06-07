@@ -1,14 +1,13 @@
 ﻿using EventPlatform.DataAccess.Classes;
 using EventPlatform.Entities.Contexts;
 
-namespace EventPlatform.DataAccess.Repositories
+namespace EventPlatform.DataAccess.Repositories;
+
+public class TaskRepository
+    : Repository<EventContext, Entities.ECP.Task>
 {
-    public class TaskRepository
-        : Repository<EventContext, Entities.ECP.Task>
+    public TaskRepository(EventContext context)
+        : base(context)
     {
-        public TaskRepository(EventContext context)
-            : base(context)
-        {
-        }
     }
 }
