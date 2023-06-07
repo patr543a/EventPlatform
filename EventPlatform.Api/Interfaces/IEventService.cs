@@ -1,12 +1,14 @@
 ﻿using EventPlatform.Entities.DTO;
+using EventPlatform.Entities.ECP;
 using EventPlatform.Entities.Models;
-using Microsoft.AspNetCore.Mvc;
 
-namespace EventPlatform.Api.Interfaces
+namespace EventPlatform.Api.Interfaces;
+
+public interface IEventService
+    : IService
 {
-    public interface IEventService
-    {
-        LoginResult? GetSessionToken(string username, string password);
-        IEnumerable<EventDto> GetEvents(Guid sessionToken);
-    }
+    IEnumerable<EventDto> GetEvents(Guid sessionToken);
+    PostResult<Event, EventDto> AddEvent(Guid sessionToken, Event @event);
+    DeleteResult<Event, EventDto> DeleteEvent(Guid sessionToken, Event @event);
+    PutResult<Event, EventDto> UpdateEvent(Guid sessionToken, Event @event);
 }
