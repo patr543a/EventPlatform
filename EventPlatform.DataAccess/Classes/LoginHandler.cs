@@ -12,7 +12,7 @@ public static class LoginHandler
 
     public static LoginResult? Login(UnitOfWork repositories, string username, string password)
     {
-        var user = repositories.UserRepository.GetUserById(username);
+        var user = repositories.UserRepository.GetByID(username);
 
         if (user is null || user.Password != password)
             return null;
@@ -31,6 +31,9 @@ public static class LoginHandler
 
     public static UserType GetUserPermissions(Guid token)
         => (UserType)(_permissions[token] ?? 0);
+
+    public static string? GetUsername(Guid token)
+        => _tokens[token] as string;
 
     private static Guid GetGuid()
     {
