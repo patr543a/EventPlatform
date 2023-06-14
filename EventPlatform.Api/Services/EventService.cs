@@ -4,6 +4,7 @@ using EventPlatform.DataAccess.Classes;
 using EventPlatform.Entities.Contexts;
 using EventPlatform.Entities.DTO;
 using EventPlatform.Entities.ECP;
+using EventPlatform.Entities.Enums;
 using EventPlatform.Entities.Models;
 
 namespace EventPlatform.Api.Services;
@@ -11,23 +12,23 @@ namespace EventPlatform.Api.Services;
 public class EventService
     : ServiceBase, IEventService
 {
-    public IEnumerable<EventDto> GetEvents(Guid sessionToken)
+    public IEnumerable<EventDto> GetEvents(UserType permission)
         => from e in _repositories.EventRepository
-           .GetVisibleEvents(LoginHandler.GetUserPermissions(sessionToken))
+           .GetVisibleEvents(permission)
            select new EventDto(e);
 
-    public PostResult<Event, EventDto> AddEvent(Guid sessionToken, Event @event)
+    public PostResult<Event, EventDto> AddEvent(Event @event)
         => _repositories
             .EventRepository
-            .Add<Event, EventDto, EventContext>(sessionToken, @event);
+            .Add<Event, EventDto, EventContext>(@event);
 
     public DeleteResult<Event, EventDto> DeleteEvent(Guid sessionToken, Event @event)
         => _repositories
             .EventRepository
-            .Delete<Event, EventDto, EventContext>(sessionToken, @event);
+            .DeleteWithIdentification(sessionToken, @event);
 
     public PutResult<Event, EventDto> UpdateEvent(Guid sessionToken, Event @event)
         => _repositories
             .EventRepository
-            .Update<Event, EventDto, EventContext>(sessionToken, @event);
+            .UpdateWithIdentification(sessionToken, @event);
 }

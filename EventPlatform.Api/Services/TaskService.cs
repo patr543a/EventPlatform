@@ -11,18 +11,24 @@ namespace EventPlatform.Api.Services;
 public class TaskService
     : ServiceBase, ITaskService
 {
+    public IEnumerable<TaskDto> GetTasksFromEvent(int eventId)
+        => _repositories
+            .TaskRepository
+            .Get(t => t.Event!.EventId == eventId, null, "Event")
+            .Select(t => t.ToDto());
+
     public PostResult<Task, TaskDto> AddTask(Guid sessionToken, Task task)
         => _repositories
             .TaskRepository
-            .Add<Task, TaskDto, EventContext>(sessionToken, task);
+            .AddWithIdentification(sessionToken, task);
 
     public DeleteResult<Task, TaskDto> DeleteTask(Guid sessionToken, Task task)
         => _repositories
             .TaskRepository
-            .Delete<Task, TaskDto, EventContext>(sessionToken, task);
+            .DeleteWithIdentification(sessionToken, task);
 
     public PutResult<Task, TaskDto> UpdateTask(Guid sessionToken, Task task)
         => _repositories
             .TaskRepository
-            .Update<Task, TaskDto, EventContext>(sessionToken, task);
+            .UpdateWithIdentification(sessionToken, task);
 }
