@@ -1,7 +1,12 @@
 ﻿using EventPlatform.Api.Classes;
 using EventPlatform.Api.Interfaces;
+using EventPlatform.DataAccess.Classes;
 using EventPlatform.Entities.DTO;
+using EventPlatform.Entities.ECP;
+using EventPlatform.Entities.Enums;
+using EventPlatform.Entities.Models;
 using Microsoft.AspNetCore.Mvc;
+using Task = System.Threading.Tasks.Task;
 
 namespace EventPlatform.Api.Controllers;
 
@@ -17,11 +22,28 @@ public class UserController
 
     [HttpGet]
     [Route("getUserTaskHistory")]
-    public async Task<ActionResult<IEnumerable<TaskDto>>> GetUserTaskHistory(string? username, Guid? sessionToken)
+    public async Task<ActionResult<IEnumerable<TaskDto>>> GetUserTaskHistory(Guid? sessionToken, string? username)
     {
         if (username is null || sessionToken is null)
             return BadRequest("Missing parameters");
 
-        return Ok(await Task.FromResult(_service.GetUserTaskHistory(username, (Guid)sessionToken)));
+        if (LoginHandler.GetUserPermissions((Guid)sessionToken) < UserType.Organizer)
+            return Unauthorized("Access denied");
+
+        return Ok(await Task.FromResult(_service.GetUserTaskHistory(username)));
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<PutResult<User, UserDto>>> UpdateUserDescription(Guid? sessionToken, string? description)
+    {
+        if (sessionToken is null || description is null)
+            return BadRequest("Missing parameters");
+
+        var username = LoginHandler.GetUsername((Guid)sessionToken);
+
+        if (username is null)
+            return Unauthorized("Access denied");
+
+        return Ok(await Task.FromResult(_service.UpdateUserDescription(username, description)));
     }
 }
