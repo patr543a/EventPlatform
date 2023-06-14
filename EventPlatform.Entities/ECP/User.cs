@@ -1,6 +1,10 @@
-﻿namespace EventPlatform.Entities.ECP;
+﻿using EventPlatform.Entities.DTO;
+using EventPlatform.Entities.Interfaces;
+
+namespace EventPlatform.Entities.ECP;
 
 public partial class User
+    : IDtoConversion<User, UserDto>
 {
     public string UserId { get; set; } = null!;
 
@@ -17,4 +21,7 @@ public partial class User
     public virtual ICollection<Task> TaskIdAssignment { get; set; } = new List<Task>();
 
     public virtual ICollection<Task> TaskIdCandidate { get; set; } = new List<Task>();
+
+    public UserDto ToDto()
+        => new(this);
 }

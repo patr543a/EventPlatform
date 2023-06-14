@@ -20,7 +20,7 @@ public partial class Event
 
     public virtual User? Organizer { get; set; } = null!;
 
-    public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+    public virtual ICollection<Task>? Tasks { get; set; } = new List<Task>();
 
     public EventDto ToDto()
         => new(this);
