@@ -18,10 +18,12 @@ public class EventDto
 
     public EventDto(Event @event)
     {
-        StartDate = @event.StartDate;
-        EndDate = @event.EndDate;
-        NeedsVolunteers = @event.NeedsVolunteers;
-        Organizer = @event.OrganizerIdFk;
-        Description = @event.Description;
+        var ev = @event ?? new();
+
+        StartDate = ev.StartDate;
+        EndDate = ev.EndDate;
+        NeedsVolunteers = ev.NeedsVolunteers;
+        Organizer = ev.OrganizerIdFk;
+        Description = ev.Description;
     }
 }
