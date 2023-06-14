@@ -14,9 +14,9 @@ public partial class Task
 
     public virtual Event? Event { get; set; } = null!;
 
-    public virtual IEnumerable<User>? VolunteerIdAssignment { get; set; } = new List<User>();
+    public virtual ICollection<User>? VolunteerIdAssignment { get; set; } = new List<User>();
 
-    public virtual IEnumerable<User>? VolunteerIdCandidate { get; set; } = new List<User>();
+    public virtual ICollection<User>? VolunteerIdCandidate { get; set; } = new List<User>();
 
     public TaskDto ToDto()
         => new(this);
