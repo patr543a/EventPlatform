@@ -17,7 +17,7 @@ public abstract class Repository<TContext, TEntity>
         _dbSet = _context.Set<TEntity>();
     }
 
-    protected virtual IEnumerable<TEntity> Get(
+    public virtual IEnumerable<TEntity> Get(
         Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         string includeProperties = "")
@@ -35,7 +35,7 @@ public abstract class Repository<TContext, TEntity>
         return orderBy is null ? query : orderBy(query);
     }
 
-    protected virtual TEntity? GetByID(object id)
+    public virtual TEntity? GetByID(object id)
         => _dbSet.Find(id);
 
     public virtual void Insert(TEntity entity)
@@ -76,6 +76,9 @@ public abstract class Repository<TContext, TEntity>
 
         GC.SuppressFinalize(this);
     }
+
+    public void Detach(TEntity entity)
+        => _context.Entry(entity).State = EntityState.Detached;
 
     ~Repository()
         => Dispose();
