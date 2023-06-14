@@ -7,6 +7,7 @@ namespace EventPlatform.Api.Interfaces;
 public interface ITaskService
     : IService
 {
+    IEnumerable<TaskDto> GetTasksFromEvent(int eventId);
     PostResult<Task, TaskDto> AddTask(Guid sessionToken, Task task);
     DeleteResult<Task, TaskDto> DeleteTask(Guid sessionToken, Task task);
     PutResult<Task, TaskDto> UpdateTask(Guid sessionToken, Task task);
