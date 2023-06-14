@@ -30,3 +30,19 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+/*
+ 1 - Done!
+ 2 - Done!
+ 3 - Done!
+ 4 - Not done
+ 5 - Not done
+ 6 - Not done
+ 7 - Not done
+ 8 - Not done
+ 9 - Not done
+ 10 - Done!
+ 11 - Done!
+ 12 - Done!
+ 13 - Not done
+ */
