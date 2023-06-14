@@ -4,6 +4,7 @@ using EventPlatform.Entities.DTO;
 using EventPlatform.Entities.ECP;
 using EventPlatform.Entities.Enums;
 using EventPlatform.Entities.Models;
+using Task = EventPlatform.Entities.ECP.Task;
 
 namespace EventPlatform.DataAccess.Repositories;
 
@@ -15,12 +16,12 @@ public class UserRepository
     {
     }
 
-    public IEnumerable<Entities.ECP.Task> GetUserTaskHistory(string username)
+    public IEnumerable<Task> GetUserTaskHistory(string username)
     {
         var user = Get(u => u.UserId == username, null, "TaskIdAssignment,TaskIdAssignment.Event").FirstOrDefault();
 
         if (user is null)
-            return Enumerable.Empty<Entities.ECP.Task>();
+            return Enumerable.Empty<Task>();
 
         return user.TaskIdAssignment;
     }

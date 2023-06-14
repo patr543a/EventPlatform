@@ -7,6 +7,7 @@ using EventPlatform.Entities.Enums;
 using EventPlatform.Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Task = System.Threading.Tasks.Task;
+using TaskECP = EventPlatform.Entities.ECP.Task;
 
 namespace EventPlatform.Api.Controllers;
 
@@ -34,6 +35,7 @@ public class UserController
     }
 
     [HttpPut]
+    [Route("updateUserDescription")]
     public async Task<ActionResult<PutResult<User, UserDto>>> UpdateUserDescription(Guid? sessionToken, string? description)
     {
         if (sessionToken is null || description is null)
@@ -45,5 +47,20 @@ public class UserController
             return Unauthorized("Access denied");
 
         return Ok(await Task.FromResult(_service.UpdateUserDescription(username, description)));
+    }
+
+    [HttpPut]
+    [Route("updateUserCandidate")]
+    public async Task<ActionResult<PutResult<User, UserDto>>> UpdateUserCandidate(Guid? sessionToken, int? taskId)
+    {
+        if (sessionToken is null || taskId is null)
+            return BadRequest("Missing parameters");
+
+        var username = LoginHandler.GetUsername((Guid)sessionToken);
+
+        if (username is null)
+            return Unauthorized("Access denied");
+
+        return Ok(await Task.FromResult(_service.UpdateUserCandidate(username, (int)taskId)));
     }
 }
