@@ -1,7 +1,9 @@
 ﻿using EventPlatform.DataAccess.Classes;
 using EventPlatform.Entities.Contexts;
+using EventPlatform.Entities.DTO;
 using EventPlatform.Entities.ECP;
 using EventPlatform.Entities.Enums;
+using EventPlatform.Entities.Models;
 
 namespace EventPlatform.DataAccess.Repositories;
 
@@ -13,11 +15,8 @@ public class UserRepository
     {
     }
 
-    public IEnumerable<Entities.ECP.Task> GetUserTaskHistory(string username, Guid sessionToken)
+    public IEnumerable<Entities.ECP.Task> GetUserTaskHistory(string username)
     {
-        if (LoginHandler.GetUserPermissions(sessionToken) == UserType.None)
-            return Enumerable.Empty<Entities.ECP.Task>();
-
         var user = Get(u => u.UserId == username, null, "TaskIdAssignment,TaskIdAssignment.Event").FirstOrDefault();
 
         if (user is null)
@@ -26,6 +25,17 @@ public class UserRepository
         return user.TaskIdAssignment;
     }
 
-    public User? GetUserById(string username)
-        => GetByID(username);
+    public PutResult<User, UserDto> UpdateUser(string userId, Action<User> change)
+    {
+        var user = GetByID(userId);
+
+        if (user is null)
+            return new PutResult<User, UserDto>(new User(), Status.NotFound);
+
+        change(user);
+
+        Save();
+
+        return new PutResult<User, UserDto>(user, Status.Success);
+    }
 }
