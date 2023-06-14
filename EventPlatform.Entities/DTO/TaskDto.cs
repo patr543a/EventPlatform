@@ -12,6 +12,6 @@ public class TaskDto
     public TaskDto(ECP.Task task)
     {
         Description = task.Description;
-        Event = new(task.Event);
+        Event = new(task.Event!);
     }
 }
