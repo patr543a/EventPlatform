@@ -9,4 +9,5 @@ public enum Status
     Success,
     AccessDenied,
     InvalidObject,
+    NotFound,
 }
