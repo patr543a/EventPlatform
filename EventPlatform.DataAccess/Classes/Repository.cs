@@ -80,6 +80,9 @@ public abstract class Repository<TContext, TEntity>
     public void Detach(TEntity entity)
         => _context.Entry(entity).State = EntityState.Detached;
 
+    public void Detach(object entity)
+        => _context.Entry(entity).State = EntityState.Detached;
+
     ~Repository()
         => Dispose();
 }
