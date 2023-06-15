@@ -4,6 +4,7 @@ using EventPlatform.Entities.DTO;
 using EventPlatform.Entities.ECP;
 using EventPlatform.Entities.Enums;
 using EventPlatform.Entities.Models;
+using Microsoft.Extensions.Logging;
 using Task = EventPlatform.Entities.ECP.Task;
 
 namespace EventPlatform.DataAccess.Repositories;
@@ -55,5 +56,82 @@ public class TaskRepository
         Save();
 
         return new PutResult<User, UserDto>(user, Status.Success);
+    }
+
+    public PutResult<User, UserDto> UpdateTaskAssignment(Guid sessionToken, int taskId, User user)
+    {
+        var username = LoginHandler.GetUsername(sessionToken);
+
+        if (username is null)
+            return new(user, Status.AccessDenied);
+
+        var task = Get(t => t.TaskId == taskId, null, "Event,VolunteerIdAssignment,VolunteerIdCandidate").FirstOrDefault();
+
+        if (task is null)
+            return new(user, Status.NotFound);
+
+        if (task.Event?.OrganizerIdFk != username)
+            return new(user, Status.AccessDenied);
+
+        if (task.VolunteerIdAssignment!.Where(u => u.UserId == user.UserId).Any())
+            return new PutResult<User, UserDto>(user, Status.AlreadyPresent);
+
+        if (!task.VolunteerIdCandidate!.Where(u => u.UserId == user.UserId).Any())
+            return new PutResult<User, UserDto>(user, Status.NotFound);
+
+        task.VolunteerIdAssignment!.Add(user);
+
+        Save();
+
+        return new PutResult<User, UserDto>(user, Status.Success);
+    }
+
+    public DeleteResult<User, UserDto> DeleteTaskAssignment(Guid sessionToken, int taskId, User user)
+    {
+        var username = LoginHandler.GetUsername(sessionToken);
+
+        if (username is null)
+            return new(user, Status.AccessDenied);
+
+        var task = Get(t => t.TaskId == taskId, null, "Event,VolunteerIdAssignment").FirstOrDefault();
+
+        if (task is null)
+            return new(user, Status.NotFound);
+
+        if (task.Event?.OrganizerIdFk != username)
+            return new(user, Status.AccessDenied);
+
+        if (!task.VolunteerIdAssignment!.Where(u => u.UserId == user.UserId).Any())
+            return new DeleteResult<User, UserDto>(user, Status.NotFound);
+
+        task.VolunteerIdAssignment!.Remove(user);
+
+        Save();
+
+        return new DeleteResult<User, UserDto>(user, Status.Success);
+    }
+
+    public IEnumerable<TaskDto> GetTasksUserVolunteerForWithIdentification(Guid sessionToken, string user, Event @event)
+    {
+        var username = LoginHandler.GetUsername(sessionToken);
+
+        if (username is null)
+            return Array.Empty<TaskDto>();
+
+        var ev = _context.Events.Find(@event.EventId);
+
+        if (ev is not null)
+            Detach(ev);
+        else
+            return Array.Empty<TaskDto>();
+
+        if (ev.OrganizerIdFk != username)
+            return Array.Empty<TaskDto>();
+
+        return Get(
+            t => t.EventIdFk == @event.EventId && t.VolunteerIdCandidate!.Where(u => u.UserId == user).Any(),
+            null,
+            "VolunteerIdCandidate")
+                .Select(i => i.ToDto());
     }
 }
