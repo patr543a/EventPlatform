@@ -5,7 +5,6 @@ using EventPlatform.Entities.Enums;
 using EventPlatform.Entities.Interfaces;
 using EventPlatform.Entities.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace EventPlatform.DataAccess.Classes;
 
